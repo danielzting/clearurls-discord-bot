@@ -8,12 +8,12 @@ class MyClient(discord.Client):
     async def on_message(self, message):
         if message.author == client.user:
             permissions = message.channel.guild.me.permissions_in(message.channel)
-            # Add :wastebasket: emoji for easy deletion if necessary
-            if permissions.add_reactions and permissions.read_message_history:
-                await message.add_reaction('🗑')
             # Suppress embeds for bot messages to avoid visual clutter
             if permissions.manage_messages:
                 await message.edit(suppress=True)
+                # Add :wastebasket: emoji for easy deletion if necessary
+                if permissions.add_reactions and permissions.read_message_history:
+                    await message.add_reaction('🗑')
 
         # Extract links and clean
         urls = re.findall('(?P<url>https?://[^\s]+)', message.content)
