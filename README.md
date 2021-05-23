@@ -28,3 +28,6 @@ It is very straightforward to host this yourself. If you do, I would love to kno
 5. Visit the generated link to invite the bot
 6. Copy the token from the Bot tab and paste `TOKEN=[your clipboard here]` into a file named `.env`
 7. Run with `python main.py`
+
+## Privacy Policy
+I collect zero information.
