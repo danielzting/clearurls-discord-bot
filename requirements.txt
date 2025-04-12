@@ -1,3 +1,4 @@
 discord
 python-dotenv
 unalix
+prometheus-client
