@@ -2,14 +2,14 @@
 <p align="center">
 	<img src="https://gitlab.com/KevinRoebert/ClearUrls/raw/master/img/clearurls.svg" width="64px" height="64px" margin-left="auto"/>
 	<br>
-	<a href="https://discord.com/api/oauth2/authorize?client_id=840669072420634696&permissions=76864&scope=bot">Click here to add to your server!</a>
+	<a href="https://danielzting.github.io/clearurls-discord-bot/start">Click here to add to your server!</a>
 </p>
 
 Have you ever noticed those `utm` and `fbclid` snippets in links? Those are used to track your activity and unnecessary for the site to work. This bot uses the [Unalix](https://github.com/AmanoTeam/Unalix) library that is based off of the popular [ClearURLs](https://github.com/ClearURLs/Addon) browser extension to automatically strip out such parameters from links. This keeps URLs short and readable while enhancing the privacy of your server's members.
 
-![demo.png](demo.png)
+![./pages/demo.png](./pages/demo.png)
 
-Disclaimer warning: I cannot make any uptime guarantees beyond what is offered by the free tier of Replit and UptimeRobot. Contact me if you would like to sponsor a more reliable hosting plan.
+Disclaimer: This public instance is hosted on my Raspberry Pi and I make guarantees of uptime or performance.
 
 ## Permissions
 The bot's permissions system is designed to be granular, minimal, and gracefully degrade in the absence of those unnecessary for basic function.
