@@ -9,7 +9,7 @@ Have you ever noticed those `utm` and `fbclid` snippets in links? Those are used
 
 ![./docs/demo.png](./docs/demo.png)
 
-Disclaimer: This public instance is hosted on my Raspberry Pi and I make guarantees of uptime or performance.
+Disclaimer: This public instance is hosted on my Raspberry Pi and I make no guarantees of uptime or performance.
 
 ## Permissions
 The bot's permissions system is designed to be granular, minimal, and gracefully degrade in the absence of those unnecessary for basic function.
