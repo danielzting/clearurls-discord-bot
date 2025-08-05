@@ -33,14 +33,14 @@ async def on_ready():
 @client.event
 async def on_message(message):
     messages.inc()
+    permissions = message.channel.permissions_for(message.guild.me)
     if message.author == client.user:
-        permissions = message.channel.permissions_for(message.guild.me)
-        # Suppress embeds for bot messages to avoid visual clutter
-        if permissions.manage_messages:
+        # Suppress embeds for bot messages if unable to suppress embeds for original message to avoid visual clutter
+        if not permissions.manage_messages:
             await message.edit(suppress=True)
-            # Add :wastebasket: emoji for easy deletion if necessary
-            if permissions.add_reactions and permissions.read_message_history:
-                await message.add_reaction('🗑')
+        # Add :wastebasket: emoji for easy deletion if necessary
+        if permissions.add_reactions and permissions.read_message_history:
+            await message.add_reaction('🗑')
     # Though this else is not necessary since the bot should never send
     # links with tracking parameters, include it anyways to be safe
     # against infinite recursion
@@ -54,6 +54,9 @@ async def on_message(message):
 
         # Send message and add reactions
         if cleaned:
+            # Suppress embeds for original message to avoid visual clutter
+            if permissions.manage_messages:
+                await message.edit(suppress=True)
             text = 'It appears that you have sent one or more links with tracking parameters. Below are the same links with those fields removed:\n' + '\n'.join(cleaned)
             await message.reply(text, mention_author=False)
             cleaned_messages.inc()
