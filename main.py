@@ -49,8 +49,8 @@ async def on_message(message):
         urls = re.findall('(?P<url>https?://[^\s]+)', message.content)
         cleaned = []
         for url in urls:
-            # Ignore trailing &, /, ? in comparing, as these are not used for tracking
-            if clear_url(url).strip('&/?') != url.strip('&/?'):
+            # Ignore trailing & in comparing, as these are not used for tracking
+            if clear_url(url).strip('&') != url.strip('&'):
                 cleaned.append(clear_url(url))
 
         # Send message and add reactions
