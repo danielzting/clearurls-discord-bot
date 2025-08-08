@@ -50,6 +50,8 @@ async def on_message(message):
         cleaned = []
         for url in urls:
             # Ignore trailing & in comparing, as these are not used for tracking
+            # This is to fix a bug where right clicking on an image in the Discord *app* (not browser) > Copy Link on context menu would create a link ending in &
+            # Pasting this link into Discord would then trigger the bot since the cleaned link removed the &, even though the image link didn't have tracking parameters
             if clear_url(url).strip('&') != url.strip('&'):
                 cleaned.append(clear_url(url))
 
