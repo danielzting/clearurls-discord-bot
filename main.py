@@ -39,7 +39,7 @@ async def on_message(message):
         if not permissions.manage_messages:
             await message.edit(suppress=True)
         # Add :wastebasket: emoji for easy deletion if necessary
-        if permissions.add_reactions and permissions.read_message_history:
+        if permissions.add_reactions and permissions.read_message_history and permissions.manage_messages:
             await message.add_reaction('🗑')
     # Though this else is not necessary since the bot should never send
     # links with tracking parameters, include it anyways to be safe
