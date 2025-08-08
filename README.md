@@ -15,7 +15,7 @@ Disclaimer: This public instance is hosted on my Raspberry Pi and I make no guar
 The bot's permissions system is designed to be granular, minimal, and gracefully degrade in the absence of those unnecessary for basic function.
 
 - *Read Messages* and *Send Messages* are **required** to perform the cleaning.
-- *Manage Messages* is **recommended** so the bot can suppress embeds on its own links to reduce visual clutter.
+- *Manage Messages* is **recommended** so the bot can suppress embeds on the original message's links to reduce visual clutter. Otherwise, it will suppress embeds on its own links.
 - *Read Message History* and *Add Reactions* are **optional** for the original poster to easily delete the bot's replies with the `:wastebasket:` emoji. Note that these two permissions are on by default for `@everyone`. If you want to disable react-to-remove, turn off these permissions for `@everyone` and give every human in your server a new role. This functionality also **requires** *Manage Messages* for deletion.
 
 ## Self-Hosting
