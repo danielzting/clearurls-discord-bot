@@ -1,0 +1,10 @@
+[
+    {
+        "providerName": "global",
+        "urlPattern": ".*",
+        "domains": [],
+        "rules": [
+        	"redirecturl\\s\\=\\s'(https?:\\/\\/.+)'"
+        ]
+    }
+]
