@@ -1,0 +1,137 @@
+{
+  "providers": {
+    "globalExtended": {
+      "urlPattern": ".*",
+      "completeProvider": false,
+      "rules": [
+        "gbraid",
+        "wbraid",
+        "gad_source",
+        "gad_campaignid",
+        "msclkid",
+        "ttclid",
+        "twclid",
+        "li_fat_id",
+        "_hsenc",
+        "_hsmi",
+        "mc_cid",
+        "mc_eid",
+        "ck_subscriber_id",
+        "vero_conv",
+        "vero_id",
+        "sr_share",
+        "nr_email_referer",
+        "_ke",
+        "_kx",
+        "epik",
+        "ef_id",
+        "dm_i",
+        "srsltid",
+        "_bta_c",
+        "_bta_tid"
+      ],
+      "referralMarketing": [],
+      "rawRules": [],
+      "exceptions": [],
+      "redirections": [],
+      "forceRedirection": false
+    },
+    "youtube_extended": {
+      "urlPattern": "^https?:\\/\\/(?:[a-z0-9-]+\\.)*?(?:youtube\\.com|youtu\\.be)",
+      "completeProvider": false,
+      "rules": [
+        "si"
+      ],
+      "referralMarketing": [],
+      "rawRules": [],
+      "exceptions": [],
+      "redirections": [],
+      "forceRedirection": false
+    },
+    "slack-redir": {
+      "urlPattern": "^https?:\\/\\/(?:[a-z0-9-]+\\.)*?slack-redir\\.net",
+      "completeProvider": false,
+      "rules": [],
+      "referralMarketing": [],
+      "rawRules": [],
+      "exceptions": [],
+      "redirections": [
+        "^https?:\\/\\/(?:[a-z0-9-]+\\.)*?slack-redir\\.net\\/link\\?.*url=([^&]*)"
+      ],
+      "forceRedirection": false
+    },
+    "redirectingat": {
+      "urlPattern": "^https?:\\/\\/(?:[a-z0-9-]+\\.)*?redirectingat\\.com",
+      "completeProvider": false,
+      "rules": [],
+      "referralMarketing": [],
+      "rawRules": [],
+      "exceptions": [],
+      "redirections": [
+        "^https?:\\/\\/(?:[a-z0-9-]+\\.)*?redirectingat\\.com\\/\\?.*url=([^&]*)"
+      ],
+      "forceRedirection": false
+    },
+    "cj-affiliate": {
+      "urlPattern": "^https?:\\/\\/(?:[a-z0-9-]+\\.)*?(?:tkqlhce|anrdoezrs|dpbolvw)\\.(?:com|net)",
+      "completeProvider": false,
+      "rules": [],
+      "referralMarketing": [],
+      "rawRules": [],
+      "exceptions": [],
+      "redirections": [
+        "^https?:\\/\\/(?:[a-z0-9-]+\\.)*?(?:tkqlhce|anrdoezrs|dpbolvw)\\.(?:com|net)\\/.*?url=([^&]*)"
+      ],
+      "forceRedirection": false
+    },
+    "impact-radius": {
+      "urlPattern": "^https?:\\/\\/(?:[a-z0-9-]+\\.)*?ojrq\\.net",
+      "completeProvider": false,
+      "rules": [],
+      "referralMarketing": [],
+      "rawRules": [],
+      "exceptions": [],
+      "redirections": [
+        "^https?:\\/\\/(?:[a-z0-9-]+\\.)*?ojrq\\.net\\/p\\/\\?.*return=([^&]*)"
+      ],
+      "forceRedirection": false
+    },
+    "connexity": {
+      "urlPattern": "^https?:\\/\\/rd\\.connexity\\.net",
+      "completeProvider": false,
+      "rules": [],
+      "referralMarketing": [],
+      "rawRules": [],
+      "exceptions": [],
+      "redirections": [
+        "^https?:\\/\\/rd\\.connexity\\.net\\/rd\\?.*t=([^&]*)"
+      ],
+      "forceRedirection": false
+    },
+    "twitch_tv": {
+      "urlPattern": "^https?:\\/\\/(?:[a-z0-9-]+\\.)*?twitch\\.tv",
+      "completeProvider": false,
+      "rules": [
+        "tt_medium",
+        "tt_content"
+      ],
+      "referralMarketing": [],
+      "rawRules": [],
+      "exceptions": [],
+      "redirections": [],
+      "forceRedirection": false
+    },
+    "commission-factory": {
+      "urlPattern": "^https?:\\/\\/t\\.cfjump\\.com",
+      "completeProvider": false,
+      "rules": [],
+      "referralMarketing": [],
+      "rawRules": [],
+      "exceptions": [],
+      "redirections": [
+        "^https?:\\/\\/t\\.cfjump\\.com\\/.*?Url=([^&]*)"
+      ],
+      "forceRedirection": false
+    }
+  }
+}
