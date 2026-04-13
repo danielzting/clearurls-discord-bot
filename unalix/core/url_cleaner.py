@@ -13,6 +13,12 @@ rulesets = coreutils.rulesets_from_files(
     ignored_providers=config.IGNORED_PROVIDERS
 )
 
+def _chain_rulesets(a, b):
+    combined = types.Rulesets()
+    combined.base_list = a.base_list + b.base_list
+    return combined
+
+
 def clear_url(
     url: typing.Union[str, urllib.parse.ParseResult],
     ignoreReferralMarketing: typing.Optional[bool] = False,
@@ -23,7 +29,8 @@ def clear_url(
     skipBlocked: typing.Optional[bool] = False,
     skipLocal: typing.Optional[bool] = False,
     stripDuplicates: typing.Optional[bool] = False,
-    stripEmpty: typing.Optional[bool] = False
+    stripEmpty: typing.Optional[bool] = False,
+    custom_rulesets: typing.Optional[types.Rulesets] = None
 ) -> str:
     """
     This method implements the same specification used in the addon version of ClearURLs (with a few minor exceptions)
@@ -107,87 +114,98 @@ def clear_url(
             'https://natura.com.br/p/2458'
     """
 
-    for ruleset in rulesets.iter():
+    if custom_rulesets is not None:
+        effective_rulesets = _chain_rulesets(rulesets, custom_rulesets)
+    else:
+        effective_rulesets = rulesets
 
-        if isinstance(url, types.URL_TYPES):
-            url = types.URL(url.geturl())
-        else:
-            url = types.URL(url)
+    _MAX_REDIRECT_DEPTH = 10
+    redirect_depth = 0
 
-        if skipLocal and url.islocal():
-            return url
+    while True:
+        redirected = False
 
-        if skipBlocked and ruleset.completeProvider:
-            continue
+        for ruleset in effective_rulesets.iter():
 
-        # https://docs.clearurls.xyz/latest/specs/rules/#urlpattern
-        if ruleset.urlPattern.compiled.match(f"{url.scheme}://{url.netloc}"):
-            if not ignoreExceptions:
-                exception_matched = None
-                # https://docs.clearurls.xyz/latest/specs/rules/#exceptions
-                for exception in ruleset.exceptions.iter():
-                    if exception.compiled.match(url):
-                        exception_matched = True
+            if isinstance(url, types.URL_TYPES):
+                url = types.URL(url.geturl())
+            else:
+                url = types.URL(url)
+
+            if skipLocal and url.islocal():
+                return url
+
+            if skipBlocked and ruleset.completeProvider:
+                continue
+
+            # https://docs.clearurls.xyz/latest/specs/rules/#urlpattern
+            if ruleset.urlPattern.compiled.match(f"{url.scheme}://{url.netloc}"):
+                if not ignoreExceptions:
+                    exception_matched = None
+                    # https://docs.clearurls.xyz/latest/specs/rules/#exceptions
+                    for exception in ruleset.exceptions.iter():
+                        if exception.compiled.match(url):
+                            exception_matched = True
+                            break
+                    if exception_matched:
+                        continue
+
+                if not ignoreRedirections:
+                    # https://docs.clearurls.xyz/latest/specs/rules/#redirections
+                    for redirection in ruleset.redirections:
+                        result = redirection.compiled.sub(r"\g<1>", url)
+
+                        # Skip empty URLs
+                        if not result:
+                            continue
+
+                        if result == url:
+                            continue
+
+                        url = types.URL(utils.requote_uri(urllib.parse.unquote(result)))
+
+                        # Workaround for URLs without scheme (see https://github.com/ClearURLs/Addon/issues/71)
+                        url = url.prepend_scheme_if_needed()
+
+                        redirect_depth += 1
+                        if redirect_depth > _MAX_REDIRECT_DEPTH:
+                            break
+
+                        redirected = True
                         break
-                if exception_matched:
-                    continue
 
-            if not ignoreRedirections:
-                # https://docs.clearurls.xyz/latest/specs/rules/#redirections
-                for redirection in ruleset.redirections:
-                    result = redirection.compiled.sub(r"\g<1>", url)
+                    if redirected:
+                        break
 
-                    # Skip empty URLs
-                    if not result:
-                        continue
+                if url.query:
+                    if not ignoreRules:
+                        # https://docs.clearurls.xyz/latest/specs/rules/#rules
+                        for rule in ruleset.rules:
+                            url.query = rule.compiled.sub(r"\g<1>", url.query)
+                    if not ignoreReferralMarketing:
+                        # https://docs.clearurls.xyz/latest/specs/rules/#referralmarketing
+                        for referral in ruleset.referralMarketing:
+                            url.query = referral.compiled.sub(r"\g<1>", url.query)
 
-                    if result == url:
-                        continue
+                # The fragment might contains tracking fields as well
+                if url.fragment:
+                    if not ignoreRules:
+                        for rule in ruleset.rules:
+                            url.fragment = rule.compiled.sub(r"\g<1>", url.fragment)
+                    if not ignoreReferralMarketing:
+                        for referral in ruleset.referralMarketing:
+                            url.fragment = referral.compiled.sub(r"\g<1>", url.fragment)
 
-                    url = types.URL(utils.requote_uri(urllib.parse.unquote(result)))
+                if url.path:
+                    if not ignoreRawRules:
+                        # https://docs.clearurls.xyz/latest/specs/rules/#rawrules
+                        for rawRule in ruleset.rawRules:
+                            url.path = rawRule.compiled.sub("", url.path)
 
-                    # Workaround for URLs without scheme (see https://github.com/ClearURLs/Addon/issues/71)
-                    url = url.prepend_scheme_if_needed()
+            url = url.geturl()
 
-                    return clear_url(
-                        url=url,
-                        ignoreReferralMarketing=ignoreReferralMarketing,
-                        ignoreRules=ignoreRules,
-                        ignoreExceptions=ignoreExceptions,
-                        ignoreRawRules=ignoreRawRules,
-                        ignoreRedirections=ignoreRedirections,
-                        skipBlocked=skipBlocked,
-                        skipLocal=skipLocal,
-                        stripDuplicates=stripDuplicates,
-                        stripEmpty=stripEmpty
-                    )
-
-            if url.query:
-                if not ignoreRules:
-                    # https://docs.clearurls.xyz/latest/specs/rules/#rules
-                    for rule in ruleset.rules:
-                        url.query = rule.compiled.sub(r"\g<1>", url.query)
-                if not ignoreReferralMarketing:
-                    # https://docs.clearurls.xyz/latest/specs/rules/#referralmarketing
-                    for referral in ruleset.referralMarketing:
-                        url.query = referral.compiled.sub(r"\g<1>", url.query)
-
-            # The fragment might contains tracking fields as well
-            if url.fragment:
-                if not ignoreRules:
-                    for rule in ruleset.rules:
-                        url.fragment = rule.compiled.sub(r"\g<1>", url.fragment)
-                if not ignoreReferralMarketing:
-                    for referral in ruleset.referralMarketing:
-                        url.fragment = referral.compiled.sub(r"\g<1>", url.fragment)
-
-            if url.path:
-                if not ignoreRawRules:
-                    # https://docs.clearurls.xyz/latest/specs/rules/#rawrules
-                    for rawRule in ruleset.rawRules:
-                        url.path = rawRule.compiled.sub("", url.path)
-
-        url = url.geturl()
+        if not redirected:
+            break
 
     url = types.URL(url)
 
@@ -197,13 +215,13 @@ def clear_url(
             stripEmpty=stripEmpty,
             stripDuplicates=stripDuplicates
         )
-    
+
     if url.fragment:
         url.fragment = utils.filter_query(
             query=url.fragment,
             stripEmpty=stripEmpty,
             stripDuplicates=stripDuplicates
         )
-    
+
     return url.geturl()
 
